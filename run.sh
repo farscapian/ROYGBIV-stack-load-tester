@@ -1,6 +1,8 @@
 #!/bin/bash
 
 set -exu
+cd "$(dirname "$0")"
+
 
 CONNECTION_FILES_PATH=
 
@@ -27,17 +29,12 @@ docker pull node:latest
 IMAGE_NAME="roygbiv-load-tester:v0-0-1"
 docker build -t "$IMAGE_NAME" .
 
-for CSV_FILE in "$CONNECTION_FILES_PATH"/*.csv; do
-    echo "CSV_FILE: $CSV_FILE"
-    if [ -f "$CSV_FILE" ]; then
-        FILE_NAME=$(basename "$CSV_FILE")
 
-        if ! docker ps | grep -q roygbiv-load-tester; then
-            docker run --name roygbiv-load-tester --rm -v  "$CONNECTION_FILES_PATH":/connection_files "$IMAGE_NAME" /connection_files/"$FILE_NAME"
-        fi
-
-        docker system prune -f
-
-        docker exec -it roygbiv-load-tester connection loadtest /connection_files/"$FILE_NAME"
+if [ -f "$CONNECTION_FILES_PATH" ]; then
+    FILE_NAME=$(basename "$CONNECTION_FILES_PATH")
+    PATH_NAME=$(dirname "$CONNECTION_FILES_PATH")
+    if ! docker ps | grep -q roygbiv-load-tester; then
+        docker run --name roygbiv-load-tester --rm -it -v "$PATH_NAME":/connection_files "$IMAGE_NAME" /connection_files/"$FILE_NAME"
     fi
-done
+fi
+
