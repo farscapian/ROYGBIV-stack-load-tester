@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -exuo pipefail
+set -euo pipefail
 
 if [[ ${OS:-} = Windows_NT ]]; then
     echo 'error: Please install bun using Windows Subsystem for Linux'

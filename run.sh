@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -exu
+set -eu
 cd "$(dirname "$0")"
 
 
@@ -30,11 +30,12 @@ IMAGE_NAME="roygbiv-load-tester:v0-0-1"
 docker build -t "$IMAGE_NAME" .
 
 
+docker system prune -f
+
 if [ -f "$CONNECTION_FILES_PATH" ]; then
     FILE_NAME=$(basename "$CONNECTION_FILES_PATH")
     PATH_NAME=$(dirname "$CONNECTION_FILES_PATH")
-    if ! docker ps | grep -q roygbiv-load-tester; then
-        docker run --name roygbiv-load-tester --rm -it -v "$PATH_NAME":/connection_files "$IMAGE_NAME" /connection_files/"$FILE_NAME"
-    fi
-fi
 
+    docker run --name roygbiv-load-tester --rm -v "$PATH_NAME":/connection_files "$IMAGE_NAME" "/connection_files/$FILE_NAME"
+
+fi
