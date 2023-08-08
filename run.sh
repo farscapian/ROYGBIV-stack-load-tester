@@ -26,7 +26,7 @@ if [ -z "$CONNECTION_FILES_PATH" ]; then
 fi
 
 docker pull node:latest
-IMAGE_NAME="roygbiv-load-tester:v0-0-1"
+IMAGE_NAME="roygbiv/load-tester:v0-0-1"
 docker build -t "$IMAGE_NAME" .
 
 
